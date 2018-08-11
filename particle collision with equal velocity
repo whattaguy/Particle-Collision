@@ -1,0 +1,86 @@
+Particle[] particles = new Particle[2];
+ 
+void setup() {
+  size(500, 500);
+  for (int i = 0; i < particles.length; i++) {
+    particles[i] = new Particle(random(40, 60), 120);  // The Particles start at various coordinates
+  }
+}
+ 
+void draw() {
+  background(0);
+  for (int i = 0; i < particles.length; i++) {
+    particles[i].display();
+    particles[i].move();
+    particles[i].edges();
+    for (int o = 0; o < particles.length; o++) {
+      if (o!=i) {
+        particles[i].overlaps(particles[o]); // The two particles are denoted as o and i.
+        particles[o].overlaps(particles[i]);
+      }
+    }
+  }
+}
+ 
+class Particle { // Created a class called Particle where everything is denoted under one class.
+  float dia;
+  float x;
+  float y; 
+  float col;
+  float xspeed;
+  float yspeed;
+  float r;
+ 
+  Particle (float D, float C) {
+    x = random(100, 400);
+    y = random(100, 400);
+    dia = D;
+    col = C;
+    r = dia/2;
+    xspeed = 5.0;
+    yspeed = 3.0;
+  }
+ 
+  void display() {
+    strokeWeight(10);
+    fill(col);
+    ellipse(x, y, dia, dia);
+  }
+ 
+  void move() {
+    x = x + xspeed;
+    y = y + yspeed;
+  }
+ 
+  void edges() {
+    if (x > width-r ) {
+      xspeed = abs(xspeed) * -1; // Always negative // As soon as particles collides with wall, they move away.
+    }
+    if ( x < r) {
+      xspeed = abs(xspeed); // Always positive
+    }
+    if (y > height-r ) {
+      yspeed = abs(yspeed) * -1; // Always negative
+    }
+    if ( y < r) {
+      yspeed = abs(yspeed); // Always positive
+    }
+  }
+  void overlaps(Particle o) {
+    float d = dist(x, y, o.x, o.y);  // As in when the two particles collide. The particles move away from each other with the same velocity
+    if (d <= r + o.r) {
+      if(x<o.x) {
+      xspeed= -abs(xspeed);
+      }
+      if(x>o.x) {
+      xspeed= abs(xspeed);
+      }
+      if(y<o.y) {
+      yspeed= -abs(yspeed); 
+      }
+      if(y>o.y) {
+      yspeed= abs(yspeed);
+      }      
+    }
+  }
+}
